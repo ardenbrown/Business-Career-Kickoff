@@ -6,6 +6,10 @@ import { Card } from "@/components/ui/card";
 import { CopyButton } from "@/components/shared/copy-button";
 import { EmptyState } from "@/components/ui/empty-state";
 
+type OutreachBlock =
+  | { title: string; value: { body: string; subject: string } }
+  | { title: string; value: { body: string; subject?: never } };
+
 export default async function OutreachPage() {
   const authUser = await requireUser();
   const user = await getUserWorkspace(authUser.id);
@@ -24,7 +28,7 @@ export default async function OutreachPage() {
     );
   }
 
-  const blocks = [
+  const blocks: OutreachBlock[] = [
     { title: "Networking email", value: outreach.networkingEmail as { subject: string; body: string } },
     { title: "LinkedIn outreach", value: outreach.linkedInMessage as { body: string } },
     { title: "Informational interview request", value: outreach.interviewRequest as { subject: string; body: string } },
