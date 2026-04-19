@@ -208,7 +208,7 @@ export async function generateApplicationPlan(profile: Profile, userId: string) 
           "You create realistic early-career business application strategies. Balance ambition with probability of conversion.",
         prompt: `Generate an application strategy for this user. Include weekly volume guidance, realistic role bands, company prioritization, follow-up cadence, and tailoring checklist.\n${serializeProfile(profile)}`,
       }),
-    () => buildApplicationPlanFallback(profile),
+    () => buildApplicationPlanFallback(),
   );
 
   await prisma.applicationPlan.create({

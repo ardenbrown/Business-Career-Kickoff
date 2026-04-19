@@ -182,9 +182,7 @@ export function buildOutreachFallback(
   };
 }
 
-export function buildApplicationPlanFallback(
-  _profile: Profile,
-): ApplicationPlanPayload {
+export function buildApplicationPlanFallback(): ApplicationPlanPayload {
   return {
     summary:
       "Run a focused search built around role families you can credibly win now, with a smaller stream of stretch applications layered on top.",

@@ -43,7 +43,7 @@ async function main() {
   const dashboard = buildDashboardFallback(profile);
   const roles = buildRoleRecommendationsFallback(profile);
   const outreach = buildOutreachFallback(profile, "Professional");
-  const plan = buildApplicationPlanFallback(profile);
+  const plan = buildApplicationPlanFallback();
   const timeline = buildTimelineFallback(profile);
 
   await prisma.dashboardInsight.create({
