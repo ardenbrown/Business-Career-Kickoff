@@ -1,4 +1,4 @@
-import { addWeeks, differenceInWeeks, format } from "date-fns";
+import { differenceInWeeks, format } from "date-fns";
 import { JobSearchStage, type Profile } from "@prisma/client";
 
 import type {
