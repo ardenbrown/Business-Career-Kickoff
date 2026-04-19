@@ -50,6 +50,8 @@ CREATE TABLE "ResumeAnalysis" (
   "id" TEXT PRIMARY KEY,
   "userId" TEXT NOT NULL,
   "resumeId" TEXT,
+  "source" TEXT NOT NULL DEFAULT 'fallback',
+  "extractedTextSample" TEXT,
   "overallAssessment" TEXT NOT NULL,
   "strengths" JSONB NOT NULL,
   "weaknesses" JSONB NOT NULL,

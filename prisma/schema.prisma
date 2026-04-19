@@ -93,6 +93,8 @@ model ResumeAnalysis {
   id                  String   @id @default(cuid())
   userId              String
   resumeId            String?
+  source              String   @default("fallback")
+  extractedTextSample String?
   overallAssessment   String
   strengths           Json
   weaknesses          Json

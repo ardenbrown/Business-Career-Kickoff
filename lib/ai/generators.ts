@@ -49,14 +49,14 @@ function serializeProfile(profile: Profile) {
 
 async function withFallback<T>(run: () => Promise<T>, fallback: () => T) {
   if (!getOpenAIClient()) {
-    return fallback();
+    return { payload: fallback(), source: "fallback" as const };
   }
 
   try {
-    return await run();
+    return { payload: await run(), source: "ai" as const };
   } catch (error) {
     console.error("AI generation failed, using fallback:", error);
-    return fallback();
+    return { payload: fallback(), source: "fallback" as const };
   }
 }
 
@@ -72,7 +72,7 @@ async function logHistory(userId: string, type: ContentType, title: string, payl
 }
 
 export async function generateDashboardInsight(profile: Profile, userId: string) {
-  const payload = await withFallback<DashboardPayload>(
+  const { payload } = await withFallback<DashboardPayload>(
     async () =>
       generateStructuredObject({
         schema: dashboardSchema,
@@ -102,7 +102,7 @@ export async function generateDashboardInsight(profile: Profile, userId: string)
 }
 
 export async function generateRoleRecommendations(profile: Profile, userId: string) {
-  const payload = await withFallback<RoleRecommendationsPayload>(
+  const { payload } = await withFallback<RoleRecommendationsPayload>(
     async () =>
       generateStructuredObject({
         schema: roleRecommendationsSchema,
@@ -134,7 +134,7 @@ export async function generateRoleRecommendations(profile: Profile, userId: stri
 }
 
 export async function generateResumeAnalysis(profile: Profile, userId: string, resumeText: string, resumeId?: string) {
-  const payload = await withFallback<ResumeAnalysisPayload>(
+  const { payload, source } = await withFallback<ResumeAnalysisPayload>(
     async () =>
       generateStructuredObject({
         schema: resumeAnalysisSchema,
@@ -149,6 +149,8 @@ export async function generateResumeAnalysis(profile: Profile, userId: string, r
     data: {
       userId,
       resumeId,
+      source,
+      extractedTextSample: resumeText.slice(0, 1200),
       overallAssessment: payload.overallAssessment,
       strengths: payload.strengths as Prisma.JsonArray,
       weaknesses: payload.weaknesses as Prisma.JsonArray,
@@ -170,7 +172,7 @@ export async function generateResumeAnalysis(profile: Profile, userId: string, r
 }
 
 export async function generateOutreachTemplates(profile: Profile, userId: string, tone: string) {
-  const payload = await withFallback<OutreachPayload>(
+  const { payload } = await withFallback<OutreachPayload>(
     async () =>
       generateStructuredObject({
         schema: outreachSchema,
@@ -200,7 +202,7 @@ export async function generateOutreachTemplates(profile: Profile, userId: string
 }
 
 export async function generateApplicationPlan(profile: Profile, userId: string) {
-  const payload = await withFallback<ApplicationPlanPayload>(
+  const { payload } = await withFallback<ApplicationPlanPayload>(
     async () =>
       generateStructuredObject({
         schema: applicationPlanSchema,
@@ -234,7 +236,7 @@ export async function generateApplicationPlan(profile: Profile, userId: string) 
 }
 
 export async function generateTimelinePlan(profile: Profile, userId: string) {
-  const payload = await withFallback<TimelinePayload>(
+  const { payload } = await withFallback<TimelinePayload>(
     async () =>
       generateStructuredObject({
         schema: timelineSchema,
