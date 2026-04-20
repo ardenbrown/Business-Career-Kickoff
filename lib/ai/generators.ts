@@ -134,16 +134,8 @@ export async function generateRoleRecommendations(profile: Profile, userId: stri
 }
 
 export async function generateResumeAnalysis(profile: Profile, userId: string, resumeText: string, resumeId?: string) {
-  const { payload, source } = await withFallback<ResumeAnalysisPayload>(
-    async () =>
-      generateStructuredObject({
-        schema: resumeAnalysisSchema,
-        system:
-          "You are an expert early-career resume reviewer for business candidates. Tie feedback tightly to target roles and ATS clarity.",
-        prompt: `Review this resume for the following user profile.\nProfile:\n${serializeProfile(profile)}\nResume text:\n${resumeText.slice(0, 12000)}`,
-      }),
-    () => buildResumeFallback(profile, resumeText),
-  );
+  const payload = buildResumeFallback(profile, resumeText);
+  const source = "fallback" as const;
 
   await prisma.resumeAnalysis.create({
     data: {
