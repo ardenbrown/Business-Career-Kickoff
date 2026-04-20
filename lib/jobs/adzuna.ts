@@ -31,9 +31,11 @@ export class AdzunaProvider implements JobsProvider {
       app_key: env.ADZUNA_APP_KEY,
       results_per_page: "20",
       what: input.query,
-      sort_by: input.sort === "newest" ? "date" : "relevance",
-      content_type: "application/json",
     });
+
+    if (input.sort === "newest") {
+      params.set("sort_by", "date");
+    }
 
     if (input.location) {
       params.set("where", input.location);
@@ -42,12 +44,16 @@ export class AdzunaProvider implements JobsProvider {
     const response = await fetch(
       `https://api.adzuna.com/v1/api/jobs/${env.ADZUNA_COUNTRY}/search/1?${params.toString()}`,
       {
+        headers: {
+          Accept: "application/json",
+        },
         next: { revalidate: 3600 },
       },
     );
 
     if (!response.ok) {
-      throw new Error(`Adzuna request failed with ${response.status}`);
+      const details = await response.text();
+      throw new Error(`Adzuna request failed with ${response.status}: ${details}`);
     }
 
     const data = (await response.json()) as AdzunaResponse;
