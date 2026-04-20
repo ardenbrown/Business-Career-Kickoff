@@ -142,7 +142,7 @@ export async function generateResumeAnalysis(profile: Profile, userId: string, r
           "You are an expert early-career resume reviewer for business candidates. Tie feedback tightly to target roles and ATS clarity.",
         prompt: `Review this resume for the following user profile.\nProfile:\n${serializeProfile(profile)}\nResume text:\n${resumeText.slice(0, 12000)}`,
       }),
-    () => buildResumeFallback(profile),
+    () => buildResumeFallback(profile, resumeText),
   );
 
   await prisma.resumeAnalysis.create({
